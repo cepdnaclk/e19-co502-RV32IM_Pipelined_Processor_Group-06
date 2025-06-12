@@ -3,13 +3,13 @@ layout: home
 permalink: index.html
 
 # Please update this with your repository name and title
-repository-name: eYY-XXX-project-template
-title:
+repository-name: e19-co502-RV32IM-Pipeline-Implementation-Group6
+title: RV32IM Pipeline Implementation Group6
 ---
 
 [comment]: # "This is the standard layout for the project, but you can clean this and use your own template"
 
-# Project Title
+# RV32IM Pipeline Implementation Group6
 
 ---
 
@@ -21,7 +21,7 @@ This is a sample image, to show how to add images to your page. To learn more op
 
 ## Team
 
--   E/19/423, , [email](mailto:e19423@eng.pdn.ac.lk)
+-   E/19/423, Weerasingha W.A.C.J., [email](mailto:e19423@eng.pdn.ac.lk)
 -   E/19/443, Wijayawardana K. G. D. T., [email](mailto:e19443@eng.pdn.ac.lk)
 
 ## Table of Contents
