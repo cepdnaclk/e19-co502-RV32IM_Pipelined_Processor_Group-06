@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // Define a module called "PC"
 module PC(PC, NEXTPC, RESET, CLOCK, BUSYWAIT);
 

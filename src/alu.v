@@ -1,6 +1,8 @@
 `timescale 1ns/1ps
 
 module ALU (
+    input CLK,
+    input RESET,
     input [31:0] DATA1,
     input [31:0] DATA2,
     input [4:0] SELECT,       // Matches ALUOP from control unit

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module reg_file(IN,OUT1,OUT2,ADDR1,ADDR2,ADDRW,WRITE,CLK,RESET); 
+module REG_FILE(IN,OUT1,OUT2,ADDR1,ADDR2,ADDRW,WRITE,CLK,RESET); 
     //declare inputs
 	input [4:0] ADDR1,ADDR2,ADDRW;
 	/*INADDRESS: range is 0-31 so 5 bit use

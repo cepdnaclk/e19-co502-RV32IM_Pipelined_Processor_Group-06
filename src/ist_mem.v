@@ -1,0 +1,58 @@
+module INSTRUCTION_MEMORY (
+    input CLK,RESET,
+    input  wire [31:0] ADDR,
+    output reg  [31:0] INSTRUCTION
+);
+
+    // always @(*) begin
+    //     case (ADDR[7:2])  // 4-byte instructions
+    //         6'd0: INSTRUCTION = 32'b0000000_00010_00001_000_00011_0110011; // ADD x3, x1, x2
+    //         6'd1: INSTRUCTION = 32'b0100000_00010_00001_000_00011_0110011; // SUB x3, x1, x2
+    //         6'd2: INSTRUCTION = 32'b0000000_00100_00001_001_00011_0110011; // SLL x3, x1, x4
+    //         6'd3: INSTRUCTION = 32'b0000000_00101_00001_010_00011_0110011; // SLT x3, x1, x5
+    //         6'd4: INSTRUCTION = 32'b0000000_00110_00001_011_00011_0110011; // SLTU x3, x1, x6
+    //         6'd5: INSTRUCTION = 32'b0000000_00111_00001_100_00011_0110011; // XOR x3, x1, x7
+    //         6'd6: INSTRUCTION = 32'b0000000_01000_00001_101_00011_0110011; // SRL x3, x1, x8
+    //         6'd7: INSTRUCTION = 32'b0100000_01000_00001_101_00011_0110011; // SRA x3, x1, x8
+    //         6'd8: INSTRUCTION = 32'b0000000_01001_00001_110_00011_0110011; // OR x3, x1, x9
+    //         6'd9: INSTRUCTION = 32'b0000000_01010_00001_111_00011_0110011; // AND x3, x1, x10
+    //         6'd10: INSTRUCTION= 32'b0000000_01011_00001_000_00011_0010011; // ADDI x3, x1, 11 (I-type)
+    //         6'd11: INSTRUCTION= 32'b0000000_00101_00001_001_00011_0010011; // SLLI x3, x1, 5
+    //         6'd12: INSTRUCTION= 32'b0000000_00101_00001_101_00011_0010011; // SRLI x3, x1, 5
+    //         6'd13: INSTRUCTION= 32'b0100000_00101_00001_101_00011_0010011; // SRAI x3, x1, 5
+    //         6'd14: INSTRUCTION= 32'b0000000_00000_00000_010_00010_0000011; // LW x2, 0(x0) (Load)
+    //         6'd15: INSTRUCTION= 32'b0000000_00010_00000_010_00100_0100011; // SW x2, 4(x0) (Store)
+    //         6'd16: INSTRUCTION= 32'b0000000_00010_00001_000_00000_1100011; // BEQ x1, x2, offset=0 (Branch)
+    //         6'd17: INSTRUCTION= 32'b0000000_00010_00001_001_00000_1100011; // BNE x1, x2, offset=0
+    //         6'd18: INSTRUCTION= 32'b0000000_00010_00001_100_00000_1100011; // BLT x1, x2, offset=0
+    //         6'd19: INSTRUCTION= 32'b0000000_00010_00001_101_00000_1100011; // BGE x1, x2, offset=0
+    //         6'd20: INSTRUCTION= 32'b0000000_00010_00001_110_00000_1100011; // BLTU x1, x2, offset=0
+    //         6'd21: INSTRUCTION= 32'b0000000_00010_00001_111_00000_1100011; // BGEU x1, x2, offset=0
+    //         6'd22: INSTRUCTION= 32'b00000000000000000000000011101111;     // JAL x0, 0
+    //         6'd23: INSTRUCTION= 32'b00000000000000001000000011100111;     // JALR x1, 0(x0)
+    //         6'd24: INSTRUCTION= 32'b00000000000000000000001010110111;     // LUI x1, 0
+    //         6'd25: INSTRUCTION= 32'b00000000000000000000000110110111;     // AUIPC x1, 0
+    //         default: INSTRUCTION = 32'b00000000000000000000000000000000;   // NOP or illegal
+
+    
+    //      endcase
+    // end
+    reg [31:0] memory [0:63]; // 64 instructions, adjust size as needed
+    wire [5:0] addr_index;
+
+    assign addr_index = ADDR[7:2];  // Word aligned addressing
+
+    // Load instruction memory from external file at start of simulation
+    initial begin
+        $readmemh("instruction.hex", memory);
+    end
+
+    always @(posedge CLK) begin
+        if (RESET) begin
+            INSTRUCTION <= 32'b0;
+        end else begin
+            INSTRUCTION <= memory[addr_index];
+        end
+    end
+
+endmodule
