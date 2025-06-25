@@ -9,20 +9,21 @@ module INSTRUCTION_MEMORY(CLK,rst,A,RD);
   reg [31:0] mem [1023:0];
   
 //   assign RD = (rst == 1'b0) ? {32{1'b0}} : mem[A[31:2]];
-  assign RD = mem[A[31:0]];
+  assign RD = 32'h00B00080;
+  //assign RD = mem[A[31:0]];
   // always @ (posedge CLK) begin
   //       if (~rst)
   //           assign RD = mem[A[31:2]];
   // end
 
-  initial begin
-    $readmemh("memfile.hex",mem);
-  end
+  // initial begin
+  //   $readmemh("memfile.hex",mem);
+  // end
 
   initial begin
     //mem[0] = 32'h00C4A303;
     //mem[1] = 32'h00832383;
-    mem[0]  = 32'h00100093;  // ADDI x1, x0, 1
+    mem[0]  = 32'h00B00080;  // ADDI x1, x0, 1
     mem[1]  = 32'h00100093;  // (Same as above) Overwrites mem[0] unless intentional
     mem[2]  = 32'h00000113;  // ADDI x2, x0, 0
     mem[3]  = 32'h00000293;  // ADDI x5, x0, 0

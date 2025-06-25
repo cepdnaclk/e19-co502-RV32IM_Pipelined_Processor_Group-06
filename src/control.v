@@ -9,7 +9,8 @@ module CONTROL_UNIT (
     output reg [2:0] BR_SEL,    // Branch type
     output reg WRITEENABLE,     // Reg write enable
     output reg [1:0] MEM_WRITE, // Memory write type
-    output reg [1:0] MEM_READ   // Memory read type
+    output reg [1:0] MEM_READ,   // Memory read type
+    output reg [1:0] WB_SEL
 );
 
 // Instruction decoding
@@ -26,8 +27,9 @@ always @(*) begin
     WRITEENABLE  = 1'b0;
     MEM_WRITE    = 2'b00;
     MEM_READ     = 2'b00;
-    BR_SEL       = 3'b000;
+    BR_SEL       = 3'b011;
     ALUOP        = 5'b00000;
+    WB_SEL       = 2'b01;
 
     case (OPCODE)
         // R-Type instructions (register-register)
@@ -35,6 +37,7 @@ always @(*) begin
             WRITEENABLE = 1'b1;
             MUX1_SELECT = 1'b0;
             MUX2_SELECT = 1'b0;
+            WB_SEL       = 2'b01;
             case ({FUNCT7, FUNCT3})
                 10'b0000000000: ALUOP = 5'b00001; // ADD
                 10'b0100000000: ALUOP = 5'b00010; // SUB
@@ -60,10 +63,11 @@ always @(*) begin
 
         // I-Type ALU (Immediate arithmetic)
         7'b0010011: begin
-            IMME_SELECT  = 3'b011;
+            IMME_SELECT  = 3'b010;
             MUX1_SELECT  = 1'b0;
             MUX2_SELECT  = 1'b1;
             WRITEENABLE  = 1'b1;
+            WB_SEL       = 2'b01;
             case (FUNCT3)
                 3'b000: ALUOP = 5'b00001; // ADDI
                 3'b010: ALUOP = 5'b00100; // SLTI
@@ -88,6 +92,7 @@ always @(*) begin
             MUX2_SELECT = 1'b1;
             MEM_READ    = FUNCT3[1:0];
             WRITEENABLE = 1'b1;
+            WB_SEL       = 2'b10;
             ALUOP       = 5'b00001; // ADD for address calc
         end
 
@@ -98,40 +103,46 @@ always @(*) begin
             MUX2_SELECT = 1'b1;
             MEM_WRITE   = FUNCT3[1:0];
             WRITEENABLE = 1'b0;
+            WB_SEL       = 2'b10;
             ALUOP       = 5'b00001; // ADD for address calc
         end
 
         // Branch
         7'b1100011: begin
-            IMME_SELECT = 3'b100;
-            MUX1_SELECT = 1'b0;
-            MUX2_SELECT = 1'b0;
+            IMME_SELECT = 3'b011;
+            MUX1_SELECT = 1'b1;
+            MUX2_SELECT = 1'b1;
             BR_SEL      = FUNCT3;
-            ALUOP       = 5'b00010; // SUB
+            ALUOP       = 5'b00001; // ADD
             WRITEENABLE = 1'b0;
+            WB_SEL       = 2'b00;
         end
 
         // JAL
         7'b1101111: begin
-            IMME_SELECT = 3'b010;
+            IMME_SELECT = 3'b001;
             MUX1_SELECT = 1'b1;
             MUX2_SELECT = 1'b1;
             ALUOP       = 5'b00001;
             WRITEENABLE = 1'b1;
+            WB_SEL       = 2'b00;
+            BR_SEL      =3'b010;
         end
 
         // JALR
         7'b1100111: begin
-            IMME_SELECT = 3'b011;
+            IMME_SELECT = 3'b001;
             MUX1_SELECT = 1'b0;
             MUX2_SELECT = 1'b1;
             ALUOP       = 5'b00001;
             WRITEENABLE = 1'b1;
+            WB_SEL       = 2'b00;
+            BR_SEL      =3'b010;
         end
 
         // LUI
         7'b0110111: begin
-            IMME_SELECT = 3'b001;
+            IMME_SELECT = 3'b000;
             MUX1_SELECT = 1'b0;
             MUX2_SELECT = 1'b1;
             ALUOP       = 5'b00000;
@@ -140,7 +151,7 @@ always @(*) begin
 
         // AUIPC
         7'b0010111: begin
-            IMME_SELECT = 3'b001;
+            IMME_SELECT = 3'b000;
             MUX1_SELECT = 1'b1;
             MUX2_SELECT = 1'b1;
             ALUOP       = 5'b00001;

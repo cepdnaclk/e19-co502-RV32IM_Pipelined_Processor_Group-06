@@ -11,6 +11,7 @@ module ALU (
 
     always @(*) begin
         case (SELECT)
+            5'b00000: RESULT = DATA2;
             5'b00001: RESULT = DATA1 + DATA2;                // ADD
             5'b00010: RESULT = DATA1 - DATA2;                // SUB
             5'b00011: RESULT = DATA1 << DATA2[4:0];          // SLL

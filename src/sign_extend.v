@@ -36,7 +36,7 @@ module SIGN_EXTEND (
                 end
             end
             I_TYPE: begin
-                if (imm_sel[3]) begin
+                if (imm_sel[2]) begin
                     // I-type unsigned (e.g., logical shift)
                     imm_ext = {20'b0, i_field};
                 end else begin

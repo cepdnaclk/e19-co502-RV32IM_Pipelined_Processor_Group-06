@@ -41,6 +41,7 @@ module RISC_V_CPU (
     wire        IF_REG_EN;
     wire [31:0] PC_I;
     wire [31:0] PC_I_4;
+    wire [1:0] ID_WB;
 
     // ===== Wires for EX Stage =====
     wire [31:0] EX_PC, EX_D1, EX_D2, EX_DATA, EX_SIGN;
@@ -83,13 +84,6 @@ module RISC_V_CPU (
         .INSTRUCTION(IF_INSTR)
     );
 
-    MUX m3 (
-        .Input1(PC_I_4),
-        .Input2(EX_DATA),
-        .Select(BR_SEL),
-        .Answer(PC_I)
-    );
-
     ADDER adder1 (
         .DATA(IF_PC),
         .OUT(PC_I_4)
@@ -121,7 +115,9 @@ module RISC_V_CPU (
         .BR_SEL(IF_BS),
         .WRITEENABLE(IF_REG_EN),
         .MEM_READ(IF_MR),
-        .MEM_WRITE(IF_MW)
+        .MEM_WRITE(IF_MW),
+        .WB_SEL(IF_W_REG)
+
     );
 
     REG_FILE reg_file(
@@ -178,7 +174,7 @@ module RISC_V_CPU (
 
     BRANCH branch(
         .data1(EX_D1),
-        .data2(EX_SIGN),
+        .data2(EX_D2),
         .op(EX_BS),
         .out(BR_SEL)
     );
@@ -226,6 +222,13 @@ module RISC_V_CPU (
         .Input2(WB_DATA),
         .Input3(WB_MEM_OUT),
         .Select(WB_W_REG)
+    );
+
+    MUX m3 (
+        .Input1(PC_I_4),
+        .Input2(EX_DATA),
+        .Select(BR_SEL),
+        .Answer(PC_I)
     );
 
    

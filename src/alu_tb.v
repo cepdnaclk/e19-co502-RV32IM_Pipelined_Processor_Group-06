@@ -38,16 +38,16 @@ module tb_RISC_V_CPU;
     always @(posedge CLK) begin
         $display("[%0t] PC=%d | ISR=%h| ALU_OP=%b | imme=%b | DATA1=%h | DATA2=%h | SELECT=%h | ANSWER=%h | bR_SEL=%h | wb_data=%b", 
             $time,
-            uut.IF_PC,
+            uut.WB_PC,
             uut.IFD_INSTR, 
-            uut.EX_ALU,
+            uut.WB_DATA,
             uut.IMME_SELECT,
             uut.alu.DATA1, 
             uut.alu.DATA2,
             uut.alu.SELECT, 
             uut.alu.RESULT,
             uut.MUX_OUT,
-            uut.WB_ADD);
+            uut.WB_W_REG);
     end
 
 endmodule

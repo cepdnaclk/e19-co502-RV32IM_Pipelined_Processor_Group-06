@@ -27,7 +27,7 @@ module tb_RISC_V_CPU;
         RESET = 0;
 
         // Run for 1000 clock cycles (10,000ns)
-        #100;
+        #600;
 
         $display("Finished simulation.");
         $finish;
@@ -35,8 +35,8 @@ module tb_RISC_V_CPU;
 
     // Optional monitor: Print internal state at each positive edge
     always @(posedge CLK) begin
-        $display("[%0t] PC=%h | IF_PC=%h | ID_PC=%h | EX_PC_4=%h | MA_PC=%h | MA_PC_4=%h | WB_PC=%h",
-            $time,  uut.PC_I,uut.IF_PC, uut.ID_PC
-            , uut.EX_PC, uut.MA_PC, uut.MA_PC_4, uut.WB_PC);
+        $display("[%0t] PC=%h | IF_PC=%h | ID_PC=%d | EX_PC_4=%d | MA_PC=%b | MA_PC_4=%h | WB_PC=%h",
+            $time,  uut.PC_I,uut.IF_INSTR, uut.EX_D1
+            , uut.EX_D2, uut.WB_ADD, uut.MUX_OUT, uut.WB_W_REG);
     end
 endmodule
