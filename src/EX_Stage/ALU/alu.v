@@ -1,13 +1,12 @@
 `timescale 1ns / 1ps
 
 // Define a module called "ALU"
-module ALU(DATA1, DATA2, RESULT, SELECT, EQUAL, SIGNEDLT, UNSIGNEDLT);
+module ALU(DATA1, DATA2, RESULT, SELECT);
     
     // Inputs and Outputs
     input[31:0] DATA1, DATA2;   // defining variables to get the input values
     input[4:0] SELECT;          // variable to store the ALU opcode
     output reg[31:0] RESULT;    // variable to store the result of the ALU
-    output EQUAL, SIGNEDLT, UNSIGNEDLT; // defining output signals
 
     // defining variables to store the results of each airthmatic operation
     wire[31:0]  AND_RES,    // and operation
@@ -104,10 +103,6 @@ module ALU(DATA1, DATA2, RESULT, SELECT, EQUAL, SIGNEDLT, UNSIGNEDLT);
         default:RESULT = 31'd0;
     endcase
     end
-
-    assign EQUAL = ~(|RESULT);      // DATA1 == DATA2
-    assign SIGNEDLT = RESULT[31];   // DATA1 < DATA2
-    assign UNSIGNEDLT= SLTU_RES[0]; // |DATA1| < |DATA2|
 
 endmodule
 

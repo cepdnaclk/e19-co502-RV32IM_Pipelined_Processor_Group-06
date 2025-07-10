@@ -5,7 +5,6 @@ module alu_tb();
     reg [31:0] DATA1, DATA2;
     reg [4:0] SELECT;
     wire [31:0] RESULT;
-    wire EQUAL, SIGNEDLT, UNSIGNEDLT;
     
     // Test variables
     integer i;
@@ -16,10 +15,7 @@ module alu_tb();
         .DATA1(DATA1),
         .DATA2(DATA2),
         .RESULT(RESULT),
-        .SELECT(SELECT),
-        .EQUAL(EQUAL),
-        .SIGNEDLT(SIGNEDLT),
-        .UNSIGNEDLT(UNSIGNEDLT)
+        .SELECT(SELECT)
     );
     
     // Task to display test results
@@ -30,8 +26,8 @@ module alu_tb();
         input [79:0] operation_name; // 10 characters max
         begin
             #10; // Wait for ALU to compute
-            $display("Time: %0t | Op: %s | DATA1: %h | DATA2: %h | RESULT: %h | Expected: %h | EQUAL: %b | SIGNEDLT: %b | UNSIGNEDLT: %b", 
-                     $time, operation_name, data1, data2, RESULT, expected, EQUAL, SIGNEDLT, UNSIGNEDLT);
+            $display("Time: %0t | Op: %s | DATA1: %h | DATA2: %h | RESULT: %h | Expected: %h", 
+                     $time, operation_name, data1, data2, RESULT, expected);
             
             if (RESULT !== expected) begin
                 $display("ERROR: Expected %h, got %h", expected, RESULT);
@@ -55,8 +51,8 @@ module alu_tb();
     
     initial begin
         $display("=== ALU Testbench Started ===");
-        $display("Time | Operation | DATA1    | DATA2    | RESULT   | Expected | EQ | SLT | ULT");
-        $display("-----|-----------|----------|----------|----------|----------|----|----|----");
+        $display("Time | Operation | DATA1    | DATA2    | RESULT   | Expected |");
+        $display("-----|-----------|----------|----------|----------|----------|");
         
         // Initialize inputs
         DATA1 = 0;
@@ -137,33 +133,6 @@ module alu_tb();
         
         // Test 20: Default case
         test_operation(5'b11111, 32'h12345678, 32'hABCDEF00, 32'h00000000, "DEFAULT");
-        
-        // Special tests for flag outputs
-        $display("\n=== Testing Flag Outputs ===");
-        
-        // Test EQUAL flag
-        DATA1 = 32'h12345678;
-        DATA2 = 32'h12345678;
-        SELECT = 5'b00010; // SUB operation should give 0
-        #10;
-        $display("EQUAL test (same values): DATA1=%h, DATA2=%h, RESULT=%h, EQUAL=%b (should be 1)", 
-                 DATA1, DATA2, RESULT, EQUAL);
-        
-        // Test SIGNEDLT flag
-        DATA1 = 32'hFFFFFFF0; // -16 in signed
-        DATA2 = 32'h00000010; // +16
-        SELECT = 5'b00010; // SUB operation
-        #10;
-        $display("SIGNEDLT test (negative result): DATA1=%h, DATA2=%h, RESULT=%h, SIGNEDLT=%b (should be 1)", 
-                 DATA1, DATA2, RESULT, SIGNEDLT);
-        
-        // Test UNSIGNEDLT flag
-        DATA1 = 32'h00000010;
-        DATA2 = 32'h00000020;
-        SELECT = 5'b00101; // SLTU operation
-        #10;
-        $display("UNSIGNEDLT test: DATA1=%h, DATA2=%h, RESULT=%h, UNSIGNEDLT=%b (should be 1)", 
-                 DATA1, DATA2, RESULT, UNSIGNEDLT);
         
         $display("\n=== ALU Testbench Completed ===");
         $finish;
