@@ -37,6 +37,6 @@ module tb_RISC_V_CPU;
     always @(posedge CLK) begin
         $display("[%0t] PC=%h | IF_PC=%h | ID_PC=%d | EX_PC_4=%d | MA_PC=%b | MA_PC_4=%h | WB_PC=%h",
             $time,  uut.PC_I,uut.IF_INSTR, uut.EX_D1
-            , uut.EX_D2, uut.WB_ADD, uut.MUX_OUT, uut.WB_W_REG);
+            , uut.EX_D2, uut.WB_ADD, uut.MA_SIGN, uut.MA_DATA);
     end
 endmodule
