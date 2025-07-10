@@ -55,16 +55,16 @@ module HAZARD_UNIT( ADDR1, ADDR2, EXRD, MEMRD, EXWE, MEMWE, EXMEMR, FDATA1SEL, F
 
         // Check for forwarding conditions
         if (EXMEMR && EXRD_EQ_ADDR1) begin
-            FDATA1SEL = 1'b01;
+            FDATA1SEL = 2'b01;
         end
         if (EXMEMR && EXRD_EQ_ADDR2) begin
-            FDATA2SEL = 1'b01;
+            FDATA2SEL = 2'b01;
         end
         if (MEMWE && MEMRD_EQ_ADDR1) begin
-            FDATA1SEL = 1'b10;
+            FDATA1SEL = 2'b10;
         end
         if (MEMWE && MEMRD_EQ_ADDR2) begin
-            FDATA2SEL = 1'b10;
+            FDATA2SEL = 2'b10;
         end
         // Check for bubble conditions
         if (EXMEMR && (EXRD_EQ_ADDR1_MEMRD || EXRD_EQ_ADDR2_MEMRD)) begin

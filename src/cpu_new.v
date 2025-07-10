@@ -15,6 +15,7 @@
 `include "ist_mem.v"
 `include "sign_extend.v"
 `include "hazard.v"
+// `include "C:\Semester8\CO502\e19-co502-RV32IM_Pipelined_Processor_Group-06\src\ID_Stage\SIGN_EXTEND\sign_extend.v"
 
 module RISC_V_CPU (
     input CLK,
@@ -116,22 +117,22 @@ module RISC_V_CPU (
     );
 
     SIGN_EXTEND sign(
-        .inst(IFD_INSTR),
-        .imm_sel(IMME_SELECT),
-        .imm_ext(IF_SIGN)
+        .INST(IFD_INSTR),
+        .IMM_SEL(IMME_SELECT),
+        .IMM_EXT(IF_SIGN)
     );
 
-    HAZARD_UNIT hazard_unit(
-        .ADDR1(IFD_INSTR[19:15])
-        .ADDR2(IFD_INSTR[24:20])
-        .EXRD(EX_ADD) 
-        .MEMRD(MA_ADD) 
-        .EXWE(EX_REG_EN)
-        .MEMWE(MA_REG_EN)
-        .EXMEMR(EX_W_REG) 
-        .FDATA1SEL(FDATA1SEL) 
-        .FDATA2SEL(FDATA1SEL)
-        .BUBBLE(BUBBLE)
+    HAZARD_UNIT hazard(
+        .ADDR1(IFD_INSTR[19:15]),
+        .ADDR2(IFD_INSTR[24:20]),
+        .EXRD(EX_ADD), 
+        .MEMRD(MA_ADD) ,
+        .EXWE(EX_REG_EN),
+        .MEMWE(MA_REG_EN),
+        .EXMEMR(EX_W_REG) ,
+        .FDATA1SEL(FDATA1SEL) ,
+        .FDATA2SEL(FDATA1SEL),
+        .BUBBLE(BUBBLE),
         .STALL(STALL)
     );
 
