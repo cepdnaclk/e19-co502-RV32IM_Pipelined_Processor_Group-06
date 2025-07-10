@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
-// module for the control unit
+
+// Define a module called "CONTROL_UNIT"
 module CONTROL_UNIT(INSTRUCTION, ALUOP, IMME_SELECT, MUX1_SELECT, MUX2_SELECT, BR_SEL, WRITEENABLE, MEM_READ, MEM_WRITE);
 
 
@@ -30,7 +31,7 @@ module CONTROL_UNIT(INSTRUCTION, ALUOP, IMME_SELECT, MUX1_SELECT, MUX2_SELECT, B
     output reg [1:0] MEM_WRITE,MEM_READ;
     
 
-// Assign signals from instruction word
+    // Assign signals from instruction word
     wire [6:0] OPCODE = INSTRUCTION[6:0];
     wire [2:0] FUNCTION3 = INSTRUCTION[14:12];
     wire [6:0] FUNCTION7 = INSTRUCTION[31:25];
