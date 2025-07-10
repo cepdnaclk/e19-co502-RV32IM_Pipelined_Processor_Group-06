@@ -1,4 +1,4 @@
-
+`timescale 1ns / 1ps
 // module for the control unit
 module CONTROL_UNIT(INSTRUCTION, ALUOP, IMME_SELECT, MUX1_SELECT, MUX2_SELECT, BR_SEL, WRITEENABLE, MEM_READ, MEM_WRITE);
 
@@ -23,24 +23,25 @@ module CONTROL_UNIT(INSTRUCTION, ALUOP, IMME_SELECT, MUX1_SELECT, MUX2_SELECT, B
     output reg[4:0] ALUOP;
     output reg [2:0] IMME_SELECT;
     output reg MUX1_SELECT, MUX2_SELECT,WRITEENABLE;
-    output reg [2:0] BR_SEL
-    // wire [6:0] OPCODE, FUNCTION7;
-    // wire [2:0] FUNCTION3;
-    output reg [1:0] MEM_WRITE,MEM_READ[1:0]
+    output reg [2:0] BR_SEL;
+    //wire [6:0] opcode = INSTRUCTION[6:0];
+    //wire [2:0] funct3 = INSTRUCTION[14:12];
+    //wire [6:0] funct7 = INSTRUCTION[31:25];
+    output reg [1:0] MEM_WRITE,MEM_READ;
     
 
 // Assign signals from instruction word
-    assign OPCODE = INSTRUCTION [6:0];
-    assign FUNCTION3 = INSTRUCTION [14:12];
-    assign FUNCTION7 = INSTRUCTION[31:25];
+    wire [6:0] OPCODE = INSTRUCTION[6:0];
+    wire [2:0] FUNCTION3 = INSTRUCTION[14:12];
+    wire [6:0] FUNCTION7 = INSTRUCTION[31:25];
 
+    
    always @(OPCODE, FUNCTION3, FUNCTION7) begin
         case(OPCODE)
-            8'b00110011:begin #1
+            7'b0110011:begin #1
                 IMME_SELECT = 3'bxxx;
                 MUX1_SELECT = 1'b0;
                 MUX2_SELECT = 1'b0;
-                MUX4_SELECT = 1'b0;
                 WRITEENABLE = 1'b1;
                 MEM_READ = 2'b00;
                 MEM_WRITE = 2'b00;

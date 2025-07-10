@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 // Define a module called "PC"
 module PC(PC, NEXTPC, RESET, CLOCK, BUSYWAIT);
 
@@ -10,7 +11,7 @@ module PC(PC, NEXTPC, RESET, CLOCK, BUSYWAIT);
     always @(RESET) begin
         #1
         if(RESET)  
-			NEXTPC = -32'd4;    
+			NEXTPC = -32'd0;    
     end
 
  // Update the PC with the next program counter value on the positive edge of the clock signal

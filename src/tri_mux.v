@@ -1,19 +1,24 @@
- module TRI_MUX(Answer,Input1,Input2,Input3,Select);
-    input [31:0] Input1,Input2,Input3;
-    input [1:0] Select; 
+`timescale 1ns/1ps
 
-    output reg [31:0] Answer;
+module TRI_MUX (
+    input  [31:0] Input1,
+    input  [31:0] Input2,
+    input  [31:0] Input3,
+    input  [1:0]  Select,
+    output reg [31:0] Answer
+);
 
-    always @ (Input1,Input2,Select)
-    begin
-        case(Select)
-            00 : assign Answer = Input1;
-            01 : assign Answer = Input2;
-            10 : assign Answer = Input3;
-            11 : assign Answer = 0b00000000;
-
+    always @(*) begin
+        case (Select)
+            2'b00: Answer = Input1;
+            2'b01: Answer = Input2;
+            2'b10: Answer = Input3;
+            2'b11: Answer = 32'd0;
+            default: Answer = 32'd0;
         endcase
     end
+
 endmodule
+
 
 

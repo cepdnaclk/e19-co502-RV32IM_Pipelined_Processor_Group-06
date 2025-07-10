@@ -1,72 +1,44 @@
-module INSTRUCTION_MEMORY(CLOCK, READ, BLOCK_ADDRESS, READ_INST, BUSYWAIT);
+`timescale 1ps/1ps
 
-input CLOCK, READ;
-input [27:0] BLOCK_ADDRESS;
-output reg[127:0] READ_INST;
-output reg BUSYWAIT;
+module INSTRUCTION_MEMORY(CLK,rst,A,RD);
 
-reg READACCESS;
+  input CLK,rst;
+  input [31:0]A;
+  output [31:0]RD;
 
-// declare memory array of 1024 bytes
-reg [7:0] MEM_ARRAY [1023:0];
+  reg [31:0] mem [1023:0];
+  
+//   assign RD = (rst == 1'b0) ? {32{1'b0}} : mem[A[31:2]];
+  assign RD = 32'h00B00080;
+  //assign RD = mem[A[31:0]];
+  // always @ (posedge CLK) begin
+  //       if (~rst)
+  //           assign RD = mem[A[31:2]];
+  // end
 
-//Initialize instruction memory
-initial
-begin
-	BUSYWAIT = 0;
-	READACCESS = 0;
-	// $readmemb("instr_mem.mem", MEM_ARRAY);      // LOAD instructions from instr_mem.mem file
-    
-    // Sample program given below. You may hardcode your software program here, or load it from a file:
-         {MEM_ARRAY[32'd03], MEM_ARRAY[32'd02], MEM_ARRAY[32'd01], MEM_ARRAY[32'd00]} <= 32'b10001111000100001000000010010011;           
-         {MEM_ARRAY[32'd07], MEM_ARRAY[32'd06], MEM_ARRAY[32'd05], MEM_ARRAY[32'd04]} <= 32'b00000000000000000000000000000000;           
-         {MEM_ARRAY[32'd11], MEM_ARRAY[32'd10], MEM_ARRAY[32'd09], MEM_ARRAY[32'd08]} <= 32'b00000000000000000000000000000000;         
-         {MEM_ARRAY[32'd15], MEM_ARRAY[32'd14], MEM_ARRAY[32'd13], MEM_ARRAY[32'd12]} <= 32'b00000000000000001111011000010011;       
-         {MEM_ARRAY[32'd19], MEM_ARRAY[32'd18], MEM_ARRAY[32'd17], MEM_ARRAY[32'd16]} <= 32'b00000000000000000000000000000000;       
-         {MEM_ARRAY[32'd23], MEM_ARRAY[32'd22], MEM_ARRAY[32'd21], MEM_ARRAY[32'd20]} <= 32'b00000000000000000000000000000000;       
-         {MEM_ARRAY[32'd27], MEM_ARRAY[32'd26], MEM_ARRAY[32'd25], MEM_ARRAY[32'd24]} <= 32'b00000000000101100000000010100011;       
-         {MEM_ARRAY[32'd31], MEM_ARRAY[32'd30], MEM_ARRAY[32'd29], MEM_ARRAY[32'd28]} <= 32'b00000000000000000000000000000000;      
-         {MEM_ARRAY[32'd35], MEM_ARRAY[32'd34], MEM_ARRAY[32'd33], MEM_ARRAY[32'd32]} <= 32'b00000000000000000000000000000000;
-         {MEM_ARRAY[32'd39], MEM_ARRAY[32'd38], MEM_ARRAY[32'd37], MEM_ARRAY[32'd36]} <= 32'b11110010001101100000000100000011;
-         {MEM_ARRAY[32'd43], MEM_ARRAY[32'd42], MEM_ARRAY[32'd41], MEM_ARRAY[32'd40]} <= 32'b00000000000000000000000000000000;
-         {MEM_ARRAY[32'd47], MEM_ARRAY[32'd46], MEM_ARRAY[32'd45], MEM_ARRAY[32'd44]} <= 32'b11110010110000001010000110100011;
-         {MEM_ARRAY[32'd51], MEM_ARRAY[32'd50], MEM_ARRAY[32'd49], MEM_ARRAY[32'd48]} <= 32'b11110010001100001010011010000011;
-         {MEM_ARRAY[32'd55], MEM_ARRAY[32'd54], MEM_ARRAY[32'd53], MEM_ARRAY[32'd52]} <= 32'b00000000000000000000000000000000;
-         {MEM_ARRAY[32'd59], MEM_ARRAY[32'd58], MEM_ARRAY[32'd57], MEM_ARRAY[32'd56]} <= 32'b00000000000000000000000000000000;
-         {MEM_ARRAY[32'd63], MEM_ARRAY[32'd62], MEM_ARRAY[32'd61], MEM_ARRAY[32'd60]} <= 32'b11110010110100001010000110100011;
+  // initial begin
+  //   $readmemh("memfile.hex",mem);
+  // end
 
-end
+  initial begin
+    //mem[0] = 32'h00C4A303;
+    //mem[1] = 32'h00832383;
+    mem[0]  = 32'h00B00080;  // ADDI x1, x0, 1
+    mem[1]  = 32'h00100093;  // (Same as above) Overwrites mem[0] unless intentional
+    mem[2]  = 32'h00000113;  // ADDI x2, x0, 0
+    mem[3]  = 32'h00000293;  // ADDI x5, x0, 0
+    mem[4]  = 32'h00600393;  // ADDI x7, x0, 6
+    mem[5]  = 32'h002081b3;  // ADD x3, x1, x2
+    mem[6]  = 32'h00008113;  // ADDI x2, x1, 0
+    mem[7]  = 32'h00018093;  // ADDI x1, x3, 0
+    mem[8]  = 32'h0032a023;  // SW x3, 0(x5)
+    mem[9]  = 32'h00428293;  // ADDI x5, x5, 4
+    mem[10] = 32'hfff38393;  // ADDI x7, x7, -1
+    mem[11] = 32'h00038463;  // BEQ x7, x0, +8
+    mem[12] = 32'hfe5ff06f;  // JAL x0, -28
+    mem[13] = 32'hffc2a303;  // LW x6, -4(x5)
+    mem[14] = 32'h006300b3;  // ADD x1, x6, x6
 
-//Detecting an incoming memory access
-always @(READ)
-begin
-    BUSYWAIT = (READ)? 1 : 0;
-    READACCESS = (READ)? 1 : 0;
-end
-
-// reading the memory block from the memory 
-always @(posedge CLOCK ) begin
-    if (READACCESS) begin
-        READ_INST[7:0]      = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0000}];    // convert byte address into block
-        READ_INST[15:8]     = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0001}];
-        READ_INST[23:16]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0010}];
-        READ_INST[31:24]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0011}];
-        READ_INST[39:32]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0100}];
-        READ_INST[47:40]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0101}];
-        READ_INST[55:48]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0110}];
-        READ_INST[63:56]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b0111}];
-        READ_INST[71:64]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1000}];
-        READ_INST[79:72]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1001}];
-        READ_INST[87:80]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1010}];
-        READ_INST[95:88]    = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1011}];
-        READ_INST[103:96]   = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1100}];
-        READ_INST[111:104]  = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1101}];
-        READ_INST[119:112]  = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1110}];
-        READ_INST[127:120]  = #40 MEM_ARRAY[{BLOCK_ADDRESS,4'b1111}];
-
-        BUSYWAIT = 0;                      // set the busywait and readaccess to low
-        READACCESS = 0;
-    end
-end
+  end
 
 endmodule
