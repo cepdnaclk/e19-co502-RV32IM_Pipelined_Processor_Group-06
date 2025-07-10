@@ -1,10 +1,11 @@
 `timescale 1ns/1ps
 
-module SIGN_EXTEND (
-    input  wire [31:0] inst,
-    input  wire [2:0]  imm_sel,
-    output reg  [31:0] imm_ext
-);
+// Define a module called "SIGN_EXTEND"
+module SIGN_EXTEND ( INST, IMM_SEL, IMM_EXT );
+
+    input  wire [31:0] INST;
+    input  wire [3:0]  IMM_SEL;
+    output reg  [31:0] IMM_EXT;
 
     // Local type encoding 
     localparam U_TYPE = 3'b000;
@@ -15,55 +16,55 @@ module SIGN_EXTEND (
     localparam SHAMT  = 3'b101;
 
     // Pre-decoded fields
-    wire [19:0] u_field   = inst[31:12];
-    wire [11:0] i_field   = inst[31:20];
-    wire [11:0] s_field   = {inst[31:25], inst[11:7]};
-    wire [4:0]  shamt_val = inst[24:20];
+    wire [19:0] u_field   = INST[31:12];
+    wire [11:0] i_field   = INST[31:20];
+    wire [11:0] s_field   = {INST[31:25], INST[11:7]};
+    wire [4:0]  shamt_val = INST[24:20];
 
     always @(*) begin
-        case (imm_sel[2:0])
+        case (IMM_SEL[2:0])
             U_TYPE: begin
                 // U-type (LUI/AUIPC): shift upper 20 bits left
-                imm_ext = {u_field, 12'b0};
+                IMM_EXT = {u_field, 12'b0};
             end
             J_TYPE: begin
-                if (imm_sel[3]) begin
+                if (IMM_SEL[3]) begin
                     // J-type (raw 20-bit as positive immediate)
-                    imm_ext = {11'b0, u_field, 1'b0};
+                    IMM_EXT = {11'b0, u_field, 1'b0};
                 end else begin
                     // J-type (real format): signed offset
-                    imm_ext = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
+                    IMM_EXT = {{12{INST[31]}}, INST[19:12], INST[20], INST[30:21], 1'b0};
                 end
             end
             I_TYPE: begin
-                if (imm_sel[3]) begin
+                if (IMM_SEL[3]) begin
                     // I-type unsigned (e.g., logical shift)
-                    imm_ext = {20'b0, i_field};
+                    IMM_EXT = {20'b0, i_field};
                 end else begin
                     // I-type signed (e.g., addi, lw)
-                    imm_ext = {{20{i_field[11]}}, i_field};
+                    IMM_EXT = {{20{i_field[11]}}, i_field};
                 end
             end
             B_TYPE: begin
                 // B-type branch: offset with sign-extension
-                imm_ext = {{20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0};
+                IMM_EXT = {{20{INST[31]}}, INST[7], INST[30:25], INST[11:8], 1'b0};
             end
             S_TYPE: begin
-                if (imm_sel[3]) begin
+                if (IMM_SEL[3]) begin
                     // S-type unsigned (rare)
-                    imm_ext = {20'b0, s_field};
+                    IMM_EXT = {20'b0, s_field};
                 end else begin
                     // S-type signed (sw)
-                    imm_ext = {{20{inst[31]}}, s_field};
+                    IMM_EXT = {{20{INST[31]}}, s_field};
                 end
             end
             SHAMT: begin
                 // Shift amount: zero-extended
-                imm_ext = {27'b0, shamt_val};
+                IMM_EXT = {27'b0, shamt_val};
             end
             default: begin
                 // Fallback for safety
-                imm_ext = 32'b0;
+                IMM_EXT = 32'b0;
             end
         endcase
     end
