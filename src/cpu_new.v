@@ -14,6 +14,7 @@
 `include "tri_mux.v"
 `include "ist_mem.v"
 `include "sign_extend.v"
+`include "hazard.v"
 
 module RISC_V_CPU (
     input CLK,
@@ -68,6 +69,15 @@ module RISC_V_CPU (
     wire [31:0] MUX_OUT;
     wire [2:0] IMME_SELECT;
 
+    //====wires for hazard unit====
+    wire [1:0] FDATA1SEL;
+    wire [1:0] FDATA2SEL;
+    wire STALL,BUBBLE;
+    wire [31:0] FDATA1;
+    wire [31:0] FDATA2;
+
+    
+
     PC PC (
         .PC(PC_I), 
         .NEXTPC(IF_PC), 
@@ -109,6 +119,20 @@ module RISC_V_CPU (
         .inst(IFD_INSTR),
         .imm_sel(IMME_SELECT),
         .imm_ext(IF_SIGN)
+    );
+
+    HAZARD_UNIT hazard_unit(
+        .ADDR1(IFD_INSTR[19:15])
+        .ADDR2(IFD_INSTR[24:20])
+        .EXRD(EX_ADD) 
+        .MEMRD(MA_ADD) 
+        .EXWE(EX_REG_EN)
+        .MEMWE(MA_REG_EN)
+        .EXMEMR(EX_W_REG) 
+        .FDATA1SEL(FDATA1SEL) 
+        .FDATA2SEL(FDATA1SEL)
+        .BUBBLE(BUBBLE)
+        .STALL(STALL)
     );
 
     // Control Unit
@@ -153,19 +177,37 @@ module RISC_V_CPU (
         .EX_W_REG(EX_W_REG), .EX_REG_EN(EX_REG_EN)
     );
 
-    MUX mx1 (
+    TRI_MUX tri_mux1 (
+        .Answer(FDATA1),
         .Input1(EX_D1),
+        .Input2(MA_DATA),
+        .Input3(MUX_OUT),
+        .Select(FDATA1SEL)
+    );
+
+    MUX mx1 (
+        .Input1(FDATA1),
         .Input2(EX_PC),
         .Select(EX_OP1),
         .Answer(EX_AL1)
     );
 
-    MUX mx2 (
+    TRI_MUX tri_mux2 (
+        .Answer(FDATA2),
         .Input1(EX_D2),
+        .Input2(MA_DATA),
+        .Input3(MUX_OUT),
+        .Select(FDATA2SEL)
+    );
+
+    MUX mx2 (
+        .Input1(FDATA2),
         .Input2(EX_SIGN),
         .Select(EX_OP2),
         .Answer(EX_AL2)
     );
+
+
 
     ALU alu (
         .CLK(CLK),
