@@ -1,10 +1,15 @@
+`timescale 1ns / 1ps
+
+// Define a module called "ALU"
 module ALU(DATA1, DATA2, RESULT, SELECT, EQUAL, SIGNEDLT, UNSIGNEDLT);
+    
+    // Inputs and Outputs
     input[31:0] DATA1, DATA2;   // defining variables to get the input values
     input[4:0] SELECT;          // variable to store the ALU opcode
     output reg[31:0] RESULT;    // variable to store the result of the ALU
     output EQUAL, SIGNEDLT, UNSIGNEDLT; // defining output signals
 
-// defining variables to store the results of each airthmatic operation
+    // defining variables to store the results of each airthmatic operation
     wire[31:0]  AND_RES,    // and operation
                 OR_RES,     // or operation
                 XOR_RES,    // xor operation 
@@ -40,20 +45,28 @@ module ALU(DATA1, DATA2, RESULT, SELECT, EQUAL, SIGNEDLT, UNSIGNEDLT);
     assign  #3 FWD_RES = DATA2;
     
 
-    // shift operations
-    assign  #1 SLL_RES = DATA1 << DATA2;
-    assign  #1 SRL_RES = DATA1 >> DATA2;
-    assign  #1 SRA_RES = DATA1 >>> DATA2;
+    // shift operations (use only lower 5 bits of shift amount)
+    assign  #1 SLL_RES = DATA1 << DATA2[4:0];
+    assign  #1 SRL_RES = DATA1 >> DATA2[4:0];
+    assign  #1 SRA_RES = $signed(DATA1) >>> DATA2[4:0];
 
     // multipication operation
     assign  #3 MUL_RES = DATA1 * DATA2;
-    //assign  MULTIPICATION = DATA1 * DATA2; // FOR A RESULT OF UPPER 32 BITS
-    assign  #3 MULH_RES = $signed(DATA1) * $signed(DATA2);
-    assign  #3 MULHU_RES = $unsigned(DATA1) * $unsigned(DATA2);
-    assign  #3 MULHSU_RES = $signed(DATA1) * $unsigned(DATA2);
+    
+    // High multiplication operations - return upper 32 bits
+    assign MULTIPICATION = $signed(DATA1) * $signed(DATA2);
+    assign  #3 MULH_RES = MULTIPICATION[63:32];
+    
+    // For unsigned multiplication, we need to properly handle the 64-bit result
+    wire [63:0] MULHU_TEMP = DATA1 * DATA2;
+    assign  #3 MULHU_RES = MULHU_TEMP[63:32];
+    
+    // For signed * unsigned, cast appropriately
+    wire signed [63:0] MULHSU_TEMP = $signed(DATA1) * {1'b0, DATA2};
+    assign  #3 MULHSU_RES = MULHSU_TEMP[63:32];
 
     // division operation
-    assign  #3 DIV_RES = DATA1 / DATA2;
+    assign  #3 DIV_RES = $signed(DATA1) / $signed(DATA2);
     assign  #3 DIVU_RES = $unsigned(DATA1) / $unsigned(DATA2);
 
 
