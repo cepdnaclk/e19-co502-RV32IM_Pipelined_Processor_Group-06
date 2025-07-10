@@ -11,7 +11,7 @@ module reg_file_tb;
     wire [31:0] OUT1, OUT2;
 
     // Instantiate the reg_file module
-    reg_file uut (
+    REG_FILE uut (
         .IN(IN),
         .OUT1(OUT1),
         .OUT2(OUT2),
@@ -66,7 +66,7 @@ module reg_file_tb;
         $display("%0t\t%b\t%0d\t%0d\t%0d\t%0d\t%0d\t%0d",
                  $time, WRITE, ADDRW, IN, ADDR1, ADDR2, OUT1, OUT2);
 
-        // Another read example (registers with no writes, should be 0)
+        // Registers with no writes, should be 0
         ADDR1 = 5'd0;
         ADDR2 = 5'd1;
         #10;
@@ -75,6 +75,12 @@ module reg_file_tb;
                  $time, WRITE, ADDRW, IN, ADDR1, ADDR2, OUT1, OUT2);
 
         $finish;
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("reg_file_tb.vcd");
+        $dumpvars(0, reg_file_tb);
     end
 
 endmodule
