@@ -28,7 +28,7 @@ module tb_RISC_V_CPU;
         RESET = 0;
 
         // Run for 2000 ns (100+ clock cycles)
-        #500;
+        #100;
 
         $display("Finished simulation.");
         $finish;
@@ -36,18 +36,18 @@ module tb_RISC_V_CPU;
 
     // ALU monitor
     always @(posedge CLK) begin
-        $display("[%0t] PC=%d | ISR=%h| ALU_OP=%b | imme=%b | DATA1=%h | DATA2=%h | SELECT=%h | ANSWER=%h | bR_SEL=%h | wb_data=%b", 
+        $display("[%0t] PC=%d | FSEL1=%b| FSD1=%d | FD2=%d | DATA1=%d | DATA2=%d| SELECT=%d | ANSWER=%d | bR_SEL=%d| wb_data=%d", 
             $time,
             uut.IF_PC,
-            uut.IFD_INSTR, 
-            uut.EX_ALU,
-            uut.IMME_SELECT,
-            uut.alu.DATA1, 
-            uut.alu.DATA2,
+            uut.FDATA1SEL, 
+            uut.EX_AL1,
+            uut.EX_AL2,
+            uut.IF_D1, 
+            uut.IF_D2,
             uut.alu.SELECT, 
             uut.alu.RESULT,
-            uut.MUX_OUT,
-            uut.WB_ADD);
+            uut.mx1.Input1,
+            uut.mx2.Input2);
     end
 
 endmodule

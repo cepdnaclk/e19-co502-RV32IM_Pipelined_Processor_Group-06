@@ -117,9 +117,9 @@ module RISC_V_CPU (
     );
 
     SIGN_EXTEND sign(
-        .INST(IFD_INSTR),
-        .IMM_SEL(IMME_SELECT),
-        .IMM_EXT(IF_SIGN)
+        .inst(IFD_INSTR),
+        .imm_sel(IMME_SELECT),
+        .imm_ext(IF_SIGN)
     );
 
     HAZARD_UNIT hazard(
