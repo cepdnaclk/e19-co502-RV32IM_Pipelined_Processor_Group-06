@@ -1,0 +1,193 @@
+$date
+	Fri Jul 11 08:54:30 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module control_hazard_tb $end
+$var wire 1 ! PIPELINE_STALL $end
+$var wire 1 " PC_STALL $end
+$var wire 1 # PC_MUX_SEL $end
+$var wire 1 $ IF_ID_STALL $end
+$var wire 1 % IF_ID_FLUSH $end
+$var wire 1 & ID_EX_FLUSH $end
+$var wire 2 ' FDATA2SEL [1:0] $end
+$var wire 2 ( FDATA1SEL [1:0] $end
+$var wire 1 ) DATA_HAZARD $end
+$var wire 1 * CONTROL_HAZARD $end
+$var reg 5 + ADDR1 [4:0] $end
+$var reg 5 , ADDR2 [4:0] $end
+$var reg 1 - BRANCH_TAKEN $end
+$var reg 32 . BRANCH_TARGET [31:0] $end
+$var reg 1 / CLK $end
+$var reg 1 0 EXMEMR $end
+$var reg 5 1 EXRD [4:0] $end
+$var reg 1 2 EXWE $end
+$var reg 1 3 IS_BRANCH_EX $end
+$var reg 1 4 IS_BRANCH_ID $end
+$var reg 5 5 MEMRD [4:0] $end
+$var reg 1 6 MEMWE $end
+$var reg 1 7 RESET $end
+$scope module dut $end
+$var wire 5 8 ADDR1 [4:0] $end
+$var wire 5 9 ADDR2 [4:0] $end
+$var wire 1 - BRANCH_TAKEN $end
+$var wire 32 : BRANCH_TARGET [31:0] $end
+$var wire 1 / CLK $end
+$var wire 1 0 EXMEMR $end
+$var wire 5 ; EXRD [4:0] $end
+$var wire 1 2 EXWE $end
+$var wire 1 3 IS_BRANCH_EX $end
+$var wire 1 4 IS_BRANCH_ID $end
+$var wire 5 < MEMRD [4:0] $end
+$var wire 1 6 MEMWE $end
+$var wire 1 7 RESET $end
+$var wire 1 = ex_rs1_hazard $end
+$var wire 1 > ex_rs2_hazard $end
+$var wire 1 ? load_use_hazard $end
+$var wire 1 @ mem_rs1_hazard $end
+$var wire 1 A mem_rs2_hazard $end
+$var reg 1 * CONTROL_HAZARD $end
+$var reg 1 ) DATA_HAZARD $end
+$var reg 2 B FDATA1SEL [1:0] $end
+$var reg 2 C FDATA2SEL [1:0] $end
+$var reg 1 & ID_EX_FLUSH $end
+$var reg 1 % IF_ID_FLUSH $end
+$var reg 1 $ IF_ID_STALL $end
+$var reg 1 # PC_MUX_SEL $end
+$var reg 1 " PC_STALL $end
+$var reg 1 ! PIPELINE_STALL $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b0 C
+b0 B
+0A
+0@
+0?
+0>
+0=
+b0 <
+b0 ;
+b1000000000000 :
+b0 9
+b0 8
+17
+06
+b0 5
+04
+03
+02
+b0 1
+00
+0/
+b1000000000000 .
+0-
+b0 ,
+b0 +
+0*
+0)
+b0 (
+b0 '
+0&
+0%
+0$
+0#
+0"
+0!
+$end
+#5000
+07
+1/
+#10000
+0/
+#15000
+1/
+#20000
+0/
+#25000
+1!
+1$
+1"
+1*
+14
+1/
+#30000
+0/
+#35000
+1/
+#40000
+0/
+#45000
+1#
+1&
+1%
+0!
+0*
+0$
+0"
+1-
+13
+04
+1/
+#50000
+0/
+#55000
+1/
+#60000
+0/
+#65000
+0#
+0&
+0%
+0-
+1/
+#70000
+0/
+#75000
+1/
+#80000
+0/
+#85000
+1!
+1$
+1"
+1)
+1=
+1?
+10
+12
+b11 1
+b11 ;
+b11 +
+b11 8
+03
+1/
+#90000
+0/
+#95000
+1/
+#100000
+0/
+#105000
+b1 (
+b1 B
+0?
+0!
+1)
+0$
+0"
+00
+1/
+#110000
+0/
+#115000
+1/
